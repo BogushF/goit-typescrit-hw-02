@@ -7,14 +7,14 @@ import ErrorMessage from "./components/ErrorMessage/ErrorMessage";
 import LoadMoreBtn from "./components/LoadMoreBtn/LoadMoreBtn";
 import ImageModal from "./components/ImageModal/ImageModal";
 
-type Card = {
+export interface Card {
   id: string;
-  url: {
+  urls: {
     regular: string;
     small: string;
   };
-  alt: string;
-};
+  alt_description: string;
+}
 
 export const App: React.FC = () => {
   const [query, setQuery] = useState("");
@@ -30,7 +30,7 @@ export const App: React.FC = () => {
     if (query === "") {
       return;
     }
-    async function getData() {
+    async function getData(): Promise<void> {
       try {
         setIsLoading(true);
         setIsError(false);
@@ -83,8 +83,8 @@ export const App: React.FC = () => {
         <ImageModal
           isOpen={modalIsOpen}
           onRequestClose={closeModal}
-          imageUrl={modalImage.url.regular}
-          imageAlt={modalImage.alt}
+          imageUrl={modalImage.urls.regular}
+          imageAlt={modalImage.alt_description}
         />
       )}
     </>
