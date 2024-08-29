@@ -7,15 +7,24 @@ import ErrorMessage from "./components/ErrorMessage/ErrorMessage";
 import LoadMoreBtn from "./components/LoadMoreBtn/LoadMoreBtn";
 import ImageModal from "./components/ImageModal/ImageModal";
 
-export const App = () => {
+type Card = {
+  id: string;
+  url: {
+    regular: string;
+    small: string;
+  };
+  alt: string;
+};
+
+export const App: React.FC = () => {
   const [query, setQuery] = useState("");
-  const [cards, setCards] = useState([]);
+  const [cards, setCards] = useState<Card[]>([]);
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [totalPages, setTotalPages] = useState(1);
   const [modalIsOpen, setIsOpen] = useState(false);
-  const [modalImage, setModalImage] = useState({ url: "", alt: "" });
+  const [modalImage, setModalImage] = useState<Card | string>("");
 
   useEffect(() => {
     if (query === "") {
@@ -39,7 +48,7 @@ export const App = () => {
     getData();
   }, [page, query]);
 
-  const handleSearch = async (query) => {
+  const handleSearch = async (query: string) => {
     setQuery(query);
     setPage(1);
     setCards([]);
@@ -49,12 +58,13 @@ export const App = () => {
     setPage(page + 1);
   };
 
-  const handleImgClick = (url, alt) => {
-    setModalImage({ url, alt });
+  const handleImgClick = (card: Card) => {
+    setModalImage(card);
     setIsOpen(true);
   };
 
   function closeModal() {
+    setModalImage("");
     setIsOpen(false);
   }
 
@@ -69,11 +79,11 @@ export const App = () => {
       {!isLoading && cards.length > 0 && !isError && page < totalPages && (
         <LoadMoreBtn onClick={handleLoadMore} />
       )}
-      {modalIsOpen && (
+      {modalIsOpen && typeof modalImage !== "string" && modalImage && (
         <ImageModal
           isOpen={modalIsOpen}
           onRequestClose={closeModal}
-          imageUrl={modalImage.url}
+          imageUrl={modalImage.url.regular}
           imageAlt={modalImage.alt}
         />
       )}
